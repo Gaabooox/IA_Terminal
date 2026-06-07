@@ -1,5 +1,6 @@
 # IA_Terminal
 
+Proyecto en curso, aun falta configurar la automatizaciòn.
 Implementando Ollama en kitty con zsh
 
 ## Descripcion
