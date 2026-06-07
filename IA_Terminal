@@ -1,5 +1,5 @@
 # =========================
-# AI SHELL CLEAN vFinal
+# IA TERMINAL
 # =========================
 
 typeset -g AI_CMD=""
