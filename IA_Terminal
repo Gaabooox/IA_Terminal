@@ -1,0 +1,64 @@
+# =========================
+# AI SHELL CLEAN vFinal
+# =========================
+
+typeset -g AI_CMD=""
+typeset -g AI_DIR=""
+typeset -g AI_EXIT=""
+typeset -g AI_SILENT=0
+
+# Evita ruido de jobs
+setopt NO_NOTIFY
+setopt NO_HUP
+setopt NO_CHECK_JOBS
+
+# ===== Silent mode =====
+ia_off() {
+  AI_SILENT=1
+  echo "IA DESACTIVADA"
+}
+
+ia_on() {
+  AI_SILENT=0
+  echo "IA ACTIVADA"
+}
+
+# ===== Captura comando =====
+preexec() {
+  AI_CMD="$1"
+  AI_DIR="$(pwd)"
+}
+
+# ===== Función IA =====
+ai_analyze() {
+  echo "$1" | ollama run qwen2.5:7b
+}
+
+# ===== Hook principal =====
+precmd() {
+  AI_EXIT=$?
+
+  # solo errores
+  if [ $AI_EXIT -ne 0 ]; then
+
+    # silent mode
+    if [ $AI_SILENT -eq 1 ]; then
+      return
+    fi
+
+    # prompt limpio y corto
+    local prompt="Responde en español, ultra breve.
+
+Formato obligatorio:
+Causa: ...
+Fix: ...
+Cmd: ...
+
+Comando: $AI_CMD
+Directorio: $AI_DIR
+Exit: $AI_EXIT"
+
+    # ejecutar sin bloquear y sin mostrar jobs
+    (ai_analyze "$prompt") 
+  fi
+}
